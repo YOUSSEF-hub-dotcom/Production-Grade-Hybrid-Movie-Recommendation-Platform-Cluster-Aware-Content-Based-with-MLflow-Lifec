@@ -13,7 +13,7 @@ import logging
 from logger_config import setup_logging
 
 setup_logging()
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("Main")
 
 
 def main():
@@ -22,13 +22,13 @@ def main():
     parser.add_argument("--n_components", type=int, default=200)
     args = parser.parse_args()
 
-    logger.info("🎬 Movie Recommender System")
+    logger.info(" Movie Recommender System")
 
     movies_path = r"C:\Users\Hedaya_city\Downloads\tmdb_5000_movies.csv"
     credits_path = r"C:\Users\Hedaya_city\Downloads\tmdb_5000_credits.csv"
 
 
-    logger.info("\n📥 Loading Data...")
+    logger.info("\n Loading Data...")
     df_full = load_and_merge_data(
         credits_path=credits_path,
         movies_path=movies_path
@@ -40,7 +40,7 @@ def main():
     df_full = clean_data(df_full)
 
 
-    logger.info("\n📊 Running EDA...")
+    logger.info("\n Running EDA...")
     (
         actor_counts,
         actor_genre_counts,
@@ -51,11 +51,11 @@ def main():
     ) = run_eda(df_full)
 
 
-    logger.info("\n📝 Text Preprocessing...")
+    logger.info("\n Text Preprocessing...")
     df_full = run_text_preprocessing(df_full)
 
 
-    logger.info("\n📈 Visualization...")
+    logger.info("\n Visualization...")
     run_visualization(
         df_full=df_full,
         actor_counts=actor_counts,
@@ -67,7 +67,7 @@ def main():
     )
 
 
-    logger.info("\n🤖 Training Model (Clustering + SVD)...")
+    logger.info("\nTraining Model (Clustering + SVD)...")
     (
         df_full,
         tfidf,
@@ -84,18 +84,18 @@ def main():
     required_cols = ["final_text", "genres_list", "title_x"]
     missing = [c for c in required_cols if c not in df_full.columns]
     if missing:
-        raise ValueError(f"❌ Missing required columns: {missing}")
+        raise ValueError(f" Missing required columns: {missing}")
 
 
-    logger.info("\n💾 Logging Model to MLflow (PyFunc + Registry)...")
+    logger.info("\nLogging Model to MLflow (PyFunc + Registry)...")
 
     run_id = run_mlflow(
         df_full, tfidf, svd, mlb, scaler, cluster_labels,
         silhouette_scores, train_params
     )
 
-    logger.info(f"\n🔗 MLflow Run ID: {run_id}")
-    logger.info("\n✅ Pipeline Finished Successfully")
+    logger.info(f"\n MLflow Run ID: {run_id}")
+    logger.info("\n Pipeline Finished Successfully")
 
 
 if __name__ == "__main__":

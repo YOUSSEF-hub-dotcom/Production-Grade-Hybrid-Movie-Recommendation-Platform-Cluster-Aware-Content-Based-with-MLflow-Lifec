@@ -8,7 +8,7 @@ import joblib
 from sklearn.metrics.pairwise import cosine_similarity
 
 import logging
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("MLflow")
 
 class MovieRecommenderModel(mlflow.pyfunc.PythonModel):
     def __init__(self, feature_names):
@@ -27,7 +27,7 @@ class MovieRecommenderModel(mlflow.pyfunc.PythonModel):
 
         if title not in self.df_full["title_x"].values:
             logger.warning(f"Movie search failed: '{title}' not found in database.")
-            return pd.DataFrame({"error": [f"الفيلم '{title}' مش موجود 😔"]})
+            return pd.DataFrame({"error": [f"الفيلم '{title}' مش موجود"]})
 
         idx = self.df_full[self.df_full["title_x"] == title].index[0]
         cluster = self.cluster_labels[idx]
@@ -133,20 +133,20 @@ def run_mlflow(df_full, tfidf, svd, mlb, scaler, cluster_labels, silhouette_scor
         if current_score >= MIN_THRESHOLD:
             client.transition_model_version_stage(REGISTERED_MODEL_NAME, version, "Production",
                                                   archive_existing_versions=True)
-            status = "Production 🚀"
+            status = "Production "
             logger.info(
-                f"🚀 Promotion Success: Silhouette Score ({current_score:.4f}) is above threshold ({MIN_THRESHOLD}).")
+                f" Promotion Success: Silhouette Score ({current_score:.4f}) is above threshold ({MIN_THRESHOLD}).")
         else:
-            status = "Staging 🛑"
+            status = "Staging "
             logger.warning(
-                f"🛑 Promotion Denied: Silhouette Score ({current_score:.4f}) is too low. Model kept in Staging for tuning.")
+                f" Promotion Denied: Silhouette Score ({current_score:.4f}) is too low. Model kept in Staging for tuning.")
 
         report = (
             f"\n{'═' * 45}\n"
-            f"✅ Run Completed Successfully!\n"
-            f"📦 Model: {REGISTERED_MODEL_NAME} | Version: {version}\n"
-            f"🏷️ Final Stage: {status}\n"
-            f"🆔 Run ID: {run_id}\n"
+            f" Run Completed Successfully!\n"
+            f" Model: {REGISTERED_MODEL_NAME} | Version: {version}\n"
+            f" Final Stage: {status}\n"
+            f" Run ID: {run_id}\n"
             f"{'═' * 45}"
         )
         logger.info(report)

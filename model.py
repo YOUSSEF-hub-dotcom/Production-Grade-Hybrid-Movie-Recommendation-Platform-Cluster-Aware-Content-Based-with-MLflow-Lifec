@@ -10,7 +10,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 import ast
 import logging
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("Model")
 
 def build_and_train_model(df_full, max_features, n_components):
     logger.info("=================>> Build Machine Learning Model")

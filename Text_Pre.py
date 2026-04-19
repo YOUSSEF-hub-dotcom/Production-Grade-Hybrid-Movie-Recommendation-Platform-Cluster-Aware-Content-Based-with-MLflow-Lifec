@@ -6,7 +6,7 @@ from nltk.tokenize import word_tokenize
 from nltk.stem import PorterStemmer
 import logging
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("Text Preprocessing")
 
 def run_text_preprocessing(df_full):
 

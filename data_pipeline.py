@@ -1,7 +1,7 @@
 import pandas as pd
 import logging
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("Data Pipeline")
 
 def load_and_merge_data(credits_path, movies_path):
     logger.info("Loading data from Excel...")

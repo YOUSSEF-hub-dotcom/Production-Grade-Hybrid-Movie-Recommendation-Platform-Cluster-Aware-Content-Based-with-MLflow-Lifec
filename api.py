@@ -12,13 +12,13 @@ try:
 
     df_full = model._model_impl.python_model.df_full
 
-    print("✅ تم تحميل الموديل والبيانات بنجاح!")
+    print(" تم تحميل الموديل والبيانات بنجاح!")
     print(f"الأعمدة المتاحة: {df_full.columns.tolist()}")
 except Exception as e:
-    print(f"❌ فشل تحميل الموديل: {e}")
+    print(f" فشل تحميل الموديل: {e}")
     df_full = pd.DataFrame(columns=['title_x', 'cast', 'crew', 'genres', 'vote_average'])
 
-app = FastAPI(title="🎬 Movie Recommender API v2.0")
+app = FastAPI(title=" Movie Recommender API v2.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -110,4 +110,4 @@ def get_all_titles():
 
 @app.get("/")
 def health():
-    return {"status": "API is running 🚀"}
+    return {"status": "API is running "}

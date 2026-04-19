@@ -5,7 +5,7 @@ from wordcloud import WordCloud
 
 import logging
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("Visualization")
 
 def run_visualization(
     df_full,

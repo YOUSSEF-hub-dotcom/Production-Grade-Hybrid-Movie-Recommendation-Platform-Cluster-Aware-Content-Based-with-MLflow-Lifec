@@ -273,6 +273,8 @@ streamlit run app.py
 - Vector database integration
 - RAG-assisted movie search
 
+[LinkedIn](https://www.linkedin.com/in/youssef-mahmoud-63b243361)
+
 ---
 
 # 👨‍💻 Author

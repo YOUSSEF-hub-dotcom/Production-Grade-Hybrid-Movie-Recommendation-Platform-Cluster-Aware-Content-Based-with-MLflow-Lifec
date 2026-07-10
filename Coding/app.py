@@ -2,36 +2,42 @@ import streamlit as st
 import requests
 import pandas as pd
 
+# Gateway URL mapping the backend container orchestration port
 API_URL = "http://127.0.0.1:8000"
 
+# Configure global single-page application properties and responsive scales
 st.set_page_config(page_title="🎬 Movie Recommender", page_icon="🎬", layout="wide")
 
+# -------------------------------------------------------------------------
+# 1. GRAPHICAL SYSTEM & CLIENT-SIDE STYLESHEET INJECTION
+# -------------------------------------------------------------------------
+# Custom styles to enforce a cinematic visual theme and resolve text color overlaps.
 st.markdown("""
     <style>
-    /* خلفية التطبيق كاملة */
+    /* Full application context viewport background */
     .stApp {
         background: linear-gradient(to right, #141e30, #243B55);
         color: white !important;
     }
 
-    /* توحيد لون العناوين والنصوص */
+    /* Enforce typography contrast baselines across native web components */
     h1, h2, h3, h4, h5, h6, p, span, label {
         color: white !important;
     }
 
-    /* تعديل صناديق الإدخال (Text Input & Selectbox) */
+    /* Standardize data ingress components (Text Input & Selectbox wrappers) */
     div[data-baseweb="input"], div[data-baseweb="select"] {
         background-color: #1f2a38 !important;
         border-radius: 8px;
     }
 
-    /* لون النص جوه الصناديق */
+    /* Input text buffer styling overrides */
     input, div[role="listbox"], div[data-baseweb="select"] div {
         color: white !important;
         background-color: #1f2a38 !important;
     }
 
-    /* حل مشكلة اللون الأبيض في القائمة المنسدلة (Selectbox Dropdown) */
+    /* Intercept and correct unreadable background options within dropdown viewports */
     ul[role="listbox"] {
         background-color: #1f2a38 !important;
     }
@@ -43,7 +49,7 @@ st.markdown("""
         background-color: #3a506b !important;
     }
 
-    /* تعديل أزرار ستريمليت */
+    /* Interactive button transition definitions */
     div.stButton>button {
         color: white !important;
         background-color: #3a506b !important;
@@ -64,34 +70,40 @@ st.markdown("""
 st.title("🎬 Movie Recommender System")
 st.markdown("Interactive Movie Recommender using **FastAPI + Streamlit + MLflow**")
 
+# Construct categorical navigation sections
 tab1, tab2, tab3, tab4 = st.tabs(
     ["🔎 Search", "🎥 Recommendations", "⭐ Actor Insights", "🎬 Director Insights"]
 )
 
-
-# تعديل دالة show_results لإضافة تفاصيل أكثر
+# -------------------------------------------------------------------------
+# 2. RESPONSIVE GRID RENDERING ENGINE
+# -------------------------------------------------------------------------
 def show_results(response):
+    """
+    Parses structural response payloads from upstream servers and generates 
+    a balanced 3-column UI grid rendering movie posters and expanded profiles.
+    """
     if response.status_code == 200:
         data = response.json()
         if data:
+            # Chunk collection lists into 3-column rows dynamically
             for i in range(0, len(data), 3):
                 cols = st.columns(3)
                 for j in range(3):
                     if i + j < len(data):
                         movie = data[i + j]
                         with cols[j]:
-                            # تصميم يشبه الكارت
+                            # Render remote web asset with adaptive edge boundaries
                             st.image(movie['poster_url'], use_container_width=True)
                             st.subheader(movie.get('title_x', 'Unknown'))
 
-                            # عرض الأنواع (Genres) بشكل لطيف
+                            # Extract and format multi-categorical genre badges
                             genres = movie.get('genres', '[]')
                             st.caption(f"🎭 {genres}")
 
-                            # زرار "Show More" لرؤية التفاصيل
+                            # Interactive localized drawer to view unstructured data extensions
                             with st.expander("View Details"):
                                 st.write(f"⭐ Rating: {movie.get('vote_average', 'N/A')}")
-                                # إذا كان الموديل يرجع الـ Overview
                                 if 'overview' in movie:
                                     st.write(movie['overview'])
         else:
@@ -105,6 +117,29 @@ def show_results(response):
         st.error(f"🚫 Error Code: {response.status_code}. Please check backend logs.")
 
 
+# -------------------------------------------------------------------------
+# 3. HIGH-LATENCY NETWORK CACHING DECLARATIONS
+# -------------------------------------------------------------------------
+@st.cache_data(ttl=3600)  # Caches structural index data for 1 hour to prevent unnecessary network overhead
+def fetch_movie_list():
+    """
+    Hits backend lookups to populate frontend auto-complete forms on cold-starts.
+    Gracefully handles empty array states on initial server boots.
+    """
+    try:
+        res = requests.get(f"{API_URL}/movie_list/", timeout=5.0)
+        return res.json()
+    except Exception as e:
+        return []
+
+# Execute cached pull sequence
+all_movies = fetch_movie_list()
+
+# -------------------------------------------------------------------------
+# 4. VIEW CONTROLLERS & EVENT BINDINGS
+# -------------------------------------------------------------------------
+
+# Tab 1: Direct Content Full-Text Pattern Search
 with tab1:
     st.subheader("Search Movies")
     query = st.text_input("Enter movie name:", key="search_input")
@@ -114,22 +149,10 @@ with tab1:
                 res = requests.get(f"{API_URL}/search/", params={"query": query})
                 show_results(res)
 
-
-# --- جلب قائمة الأفلام مرة واحدة عند تشغيل الـ App ---
-@st.cache_data
-def fetch_movie_list():
-    try:
-        res = requests.get(f"{API_URL}/movie_list/")
-        return res.json()
-    except:
-        return []
-
-
-all_movies = fetch_movie_list()
-
+# Tab 2: Latent Vector Proximity Recommendation Engine
 with tab2:
     st.subheader("Get Recommendations")
-    # استخدام selectbox بدل text_input لمنع أخطاء الكتابة
+    # Using secure selectbox widgets to prevent typographic query syntax injection
     title = st.selectbox("Select a movie you liked:", all_movies, index=None)
     n = st.slider("Number of recommendations:", 3, 12, 6)
 
@@ -139,6 +162,7 @@ with tab2:
                 res = requests.get(f"{API_URL}/recommend/", params={"title": title, "n": n})
                 show_results(res)
 
+# Tab 3: Cast-Profile Data Sub-Setting Filter
 with tab3:
     st.subheader("Actor Movies")
     actor = st.text_input("Enter actor name:", key="actor_input")
@@ -148,6 +172,7 @@ with tab3:
                 res = requests.get(f"{API_URL}/actor/", params={"name": actor})
                 show_results(res)
 
+# Tab 4: Production Crew Sub-Setting Filter
 with tab4:
     st.subheader("Director Movies")
     director = st.text_input("Enter director name:", key="dir_input")

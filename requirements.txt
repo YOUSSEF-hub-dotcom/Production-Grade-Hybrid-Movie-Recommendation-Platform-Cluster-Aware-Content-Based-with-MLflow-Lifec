@@ -1,0 +1,25 @@
+# ---- Machine Learning & Text Vectorization ----
+scikit-learn
+scipy
+
+# ---- Text Preprocessing & NLP ----
+nltk
+wordcloud
+
+# ---- Core & Data Science ----
+pandas
+numpy
+
+# ---- MLOps & Experiment Tracking ----
+mlflow
+joblib
+
+# ---- API & Backend ----
+fastapi
+uvicorn
+
+# ---- Frontend & Dashboards ----
+streamlit
+requests
+matplotlib
+seaborn
